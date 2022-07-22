@@ -13,6 +13,11 @@ commands:
     description: "Check mask"
     usage: /maskChecker
     permission: maskChecker.maskChecker
+  ScamScenarios:
+    description: "Scam scenarios"
+    usage: /ScamScenarios
+    permission: ScamScenarios.ScamScenarios
+
 
 
 
@@ -23,4 +28,8 @@ permissions:
 
     maskChecker.maskChecker:
       description: "Allows the user to use the /maskChecker command"
+      default: true
+
+    ScamScenarios.ScamScenarios:
+      description: "Allows the user to use the /ScamScenarios command"
       default: true

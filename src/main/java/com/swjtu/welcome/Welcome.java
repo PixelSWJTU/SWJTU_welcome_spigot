@@ -1,5 +1,6 @@
 package com.swjtu.welcome;
 
+import com.swjtu.welcome.commands.ScamScenarios;
 import com.swjtu.welcome.commands.getEssentialItem;
 import com.swjtu.welcome.commands.maskChecker;
 import org.bukkit.Bukkit;
@@ -18,7 +19,7 @@ public final class Welcome extends JavaPlugin {
         // register cmd
         Bukkit.getPluginCommand("getEssentialItem").setExecutor(new getEssentialItem());
         Bukkit.getPluginCommand("maskChecker").setExecutor(new maskChecker());
-
+        Bukkit.getPluginCommand("scamScenarios").setExecutor(new ScamScenarios());
         // Read config
         saveDefaultConfig();
 
