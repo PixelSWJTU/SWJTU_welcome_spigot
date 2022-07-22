@@ -1,0 +1,26 @@
+name: Welcome
+version: '${project.version}'
+main: com.swjtu.welcome.Welcome
+api-version: 1.19
+
+commands:
+  getEssentialItem:
+    description: "Get essential item"
+    usage: /getEssentialItem
+    permission: getEssentialItem.getEssentialItem
+
+  maskChecker:
+    description: "Check mask"
+    usage: /maskChecker
+    permission: maskChecker.maskChecker
+
+
+
+permissions:
+  getEssentialItem.getEssentialItem:
+    description: "Allows the user to use the /getEssentialItem command"
+    default: true
+
+    maskChecker.maskChecker:
+      description: "Allows the user to use the /maskChecker command"
+      default: true
