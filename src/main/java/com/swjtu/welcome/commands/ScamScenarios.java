@@ -29,5 +29,8 @@ public class ScamScenarios implements CommandExecutor {
                     sender.sendMessage(scenario);
                 }, 20L * scenarios.indexOf(scenario));
             }
+
+            // 监听用户点击
+
     }
 }

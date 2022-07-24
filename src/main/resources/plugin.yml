@@ -25,7 +25,14 @@ commands:
     description: "Set report status"
     usage: /setReportStatus
     permission: setReportStatus.setReportStatus
-
+  MultiCmdExec:
+    description: "Multi command executor"
+    usage: /MultiCmdExec
+    permission: MultiCmdExec.MultiCmdExec
+  BlockSetter:
+    description: "Block setter"
+    usage: /BlockSetter
+    permission: BlockSetter.BlockSetter
 
 
 
@@ -48,4 +55,10 @@ permissions:
 
     setReportStatus.setReportStatus:
         description: "Allows the user to use the /setReportStatus command"
+        default: true
+    MultiCmdExec.MultiCmdExec:
+        description: "Allows the user to use the /MultiCmdExec command"
+        default: true
+    BlockSetter:
+        description: "Allows the user to use the /BlockSetter command"
         default: true

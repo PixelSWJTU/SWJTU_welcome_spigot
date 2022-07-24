@@ -19,6 +19,8 @@ public final class Welcome extends JavaPlugin {
         Bukkit.getPluginCommand("scamScenarios").setExecutor(new ScamScenarios());
         Bukkit.getPluginCommand("GateSetter").setExecutor(new setGatePos());
         Bukkit.getPluginCommand("setReportStatus").setExecutor(new setReportStatus());
+        Bukkit.getPluginCommand("MultiCmdExec").setExecutor(new MultiCmdExec());
+        Bukkit.getPluginCommand("BlockSetter").setExecutor(new BlockSetter());
         // Read config
         saveDefaultConfig();
 
