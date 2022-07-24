@@ -1,7 +1,7 @@
 name: Welcome
 version: '${project.version}'
 main: com.swjtu.welcome.Welcome
-api-version: 1.19
+api-version: 1.18
 
 commands:
   getEssentialItem:
@@ -17,6 +17,14 @@ commands:
     description: "Scam scenarios"
     usage: /ScamScenarios
     permission: ScamScenarios.ScamScenarios
+  GateSetter:
+    description: "Gate setter"
+    usage: /GateSetter
+    permission: GateSetter.GateSetter
+  setReportStatus:
+    description: "Set report status"
+    usage: /setReportStatus
+    permission: setReportStatus.setReportStatus
 
 
 
@@ -33,3 +41,11 @@ permissions:
     ScamScenarios.ScamScenarios:
       description: "Allows the user to use the /ScamScenarios command"
       default: true
+
+    GateSetter.GateSetter:
+      description: "Allows the user to use the /GateSetter command"
+      default: true
+
+    setReportStatus.setReportStatus:
+        description: "Allows the user to use the /setReportStatus command"
+        default: true

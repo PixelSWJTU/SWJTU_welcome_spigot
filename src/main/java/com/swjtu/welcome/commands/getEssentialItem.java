@@ -14,13 +14,25 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class getEssentialItem implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage("Hello World!");
+//        sender.sendMessage("Hello World!");
         String cmd = command.getName();
         getEssentialItemHandler((Player) sender);
         return true;
     }
 
     public void getEssentialItemHandler(CommandSender sender) {
+        // check if user have these items
+        Player player = (Player) sender;
+        Inventory playerInventory = player.getInventory();
+        if (playerInventory.contains(Material.LEATHER_HELMET)
+                && playerInventory.contains(Material.WRITTEN_BOOK)
+                && playerInventory.contains(Material.CHEST)
+        ) {
+            player.sendMessage("§6§l你已经带好所有东西了！ 可以出发啦！");
+            return;
+        }
+
+
         Inventory inventory = Bukkit.createInventory(null, 9, "§6§l请带好所有东西出门！");
         // 录取通知书
         ItemStack itemStack = new ItemStack(Material.WRITTEN_BOOK);
@@ -31,9 +43,9 @@ public class getEssentialItem implements CommandExecutor {
 
         // 档案袋（箱子）
         ItemStack itemStack1 = new ItemStack(Material.CHEST);
-        // 设置名字 -- 档案带
+        // 设置名字 -- 档案袋
         ItemMeta iMeta = itemStack1.getItemMeta();
-        iMeta.setDisplayName("§6§l档案带");
+        iMeta.setDisplayName("§6§l档案袋");
         itemStack1.setItemMeta(iMeta);
         inventory.setItem(1, itemStack1);
 

@@ -6,3 +6,11 @@ scamScenarios:
   - "ScamScenario4"
   - "ScamScenario5"
   - "ScamScenario6"
+
+
+gatePos1:
+  X: -7
+  Y: 80
+gatePos2:
+  X: -7
+  Y: 80

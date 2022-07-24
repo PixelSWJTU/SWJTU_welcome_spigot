@@ -27,7 +27,7 @@ public class ScamScenarios implements CommandExecutor {
             for (String scenario : scenarios) {
                 getServer().getScheduler().runTaskLater(config, () -> {
                     sender.sendMessage(scenario);
-                }, 20 * scenarios.indexOf(scenario));
+                }, 20L * scenarios.indexOf(scenario));
             }
     }
 }

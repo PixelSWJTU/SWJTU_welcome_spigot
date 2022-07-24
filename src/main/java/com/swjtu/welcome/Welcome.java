@@ -1,8 +1,6 @@
 package com.swjtu.welcome;
 
-import com.swjtu.welcome.commands.ScamScenarios;
-import com.swjtu.welcome.commands.getEssentialItem;
-import com.swjtu.welcome.commands.maskChecker;
+import com.swjtu.welcome.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
@@ -13,13 +11,14 @@ public final class Welcome extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         // hello world
-        getLogger().info("Hello World!");
 
         Bukkit.getPluginManager().registerEvents(new PlayerInteract(), this);
         // register cmd
         Bukkit.getPluginCommand("getEssentialItem").setExecutor(new getEssentialItem());
         Bukkit.getPluginCommand("maskChecker").setExecutor(new maskChecker());
         Bukkit.getPluginCommand("scamScenarios").setExecutor(new ScamScenarios());
+        Bukkit.getPluginCommand("GateSetter").setExecutor(new setGatePos());
+        Bukkit.getPluginCommand("setReportStatus").setExecutor(new setReportStatus());
         // Read config
         saveDefaultConfig();
 
