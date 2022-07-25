@@ -95,11 +95,11 @@ public class PlayerInteract implements Listener {
 
 
         int gateX1 = (int) config.getConfig().getDouble("gatePos1.X");
-        int gateY1 = (int) config.getConfig().getDouble("gatePos1.Y");
+        int gateY1 = (int) config.getConfig().getDouble("gatePos1.Z");
         int gateX2 = (int) config.getConfig().getDouble("gatePos2.X");
-        int gateY2 = (int) config.getConfig().getDouble("gatePos2.Y");
+        int gateY2 = (int) config.getConfig().getDouble("gatePos2.Z");
         int userX = (int) location.getX();
-        int userY = (int) location.getY();
+        int userY = (int) location.getZ();
         double distance = Math.sqrt(Math.pow(gateX1 - location.getX(), 2) + Math.pow(gateY1 - location.getY(), 2));
 //        player.sendMessage("距离校门" + distance);
 //        player.sendMessage("校门1" + gateX1 + " " + gateY1);

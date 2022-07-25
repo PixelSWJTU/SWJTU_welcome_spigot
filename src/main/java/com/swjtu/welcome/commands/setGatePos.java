@@ -20,12 +20,13 @@ public class setGatePos implements CommandExecutor {
         // get player now location
         int X = ((Player) sender).getLocation().getBlockX();
         int Y = ((Player) sender).getLocation().getBlockY();
+        int Z = ((Player) sender).getLocation().getBlockZ();
 
         String arg = args[0];
         if (arg.equals("1")) {
             config.getConfig().set("gatePos1.X", X);
-            config.getConfig().set("gatePos1.Y", Y);
-//            config.getConfig().set("gatePos1.Z", Z);
+//            config.getConfig().set("gatePos1.Y", Y);
+            config.getConfig().set("gatePos1.Z", Z);
             // append to config file
             config.saveConfig();
             sender.sendMessage("§6§l你已经设置了第一个门的位置！");
@@ -33,8 +34,8 @@ public class setGatePos implements CommandExecutor {
             config.reloadConfig();
         } else if (arg.equals("2")) {
             config.getConfig().set("gatePos2.X", X);
-            config.getConfig().set("gatePos2.Y", Y);
-//            config.getConfig().set("gatePos2.Z", Z);
+//            config.getConfig().set("gatePos2.Y", Y);
+            config.getConfig().set("gatePos2.Z", Z);
             config.saveConfig();
             sender.sendMessage("§6§l你已经设置了第二个门的位置！");
             // reload config
@@ -43,10 +44,10 @@ public class setGatePos implements CommandExecutor {
             sender.sendMessage("§6§l你输入的参数有误！");
         }
         int X1 = config.getConfig().getInt("gatePos1.X");
-        int Y1 = config.getConfig().getInt("gatePos1.Y");
+        int Z1 = config.getConfig().getInt("gatePos1.Z");
         int X2 = config.getConfig().getInt("gatePos2.X");
-        int Y2 = config.getConfig().getInt("gatePos2.Y");
-        sender.sendMessage("§6§l现在校门位置：" + X1 + "," + Y1 + "," + X2 + "," + Y2);
+        int Z2 = config.getConfig().getInt("gatePos2.Z");
+        sender.sendMessage("§6§l现在校门位置：" + X1 + "," + Z1 + "," + X2 + "," + Z2);
 
         return true;
     }
