@@ -56,12 +56,14 @@ public class PlayerInteract implements Listener {
         String title = new String("§6欢迎来到西南交通大学！".getBytes(), StandardCharsets.UTF_8);
         player.sendTitle(title, "Welcome", 10, 50, 30);
         player.setGameMode(GameMode.CREATIVE);
+        player.performCommand("gamemode 1");
     }
 
     @EventHandler
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         player.setGameMode(GameMode.CREATIVE);
+        player.performCommand("gamemode 1");
     }
 
 

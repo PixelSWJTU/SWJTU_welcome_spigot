@@ -17,7 +17,7 @@ public class BlockSetter implements CommandExecutor {
         int Z = Integer.parseInt(args[2]);
         String MaterialName = args[3];
         String worldName = args[4];
-        Material material = Material.getMaterial(MaterialName);
+        Material material = Material.matchMaterial(MaterialName);
 
 
         if (material == null) {
