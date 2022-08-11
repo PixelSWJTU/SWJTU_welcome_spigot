@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerInteract implements Listener {
     // 玩家拿到物品右键空气
@@ -31,6 +32,99 @@ public class PlayerInteract implements Listener {
 //
 //        }
 //    }
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+            return;
+        }
+        // 检测用户当前物品
+        ItemStack itemStack = event.getPlayer().getItemInHand();
+        // 用户点击的坐标
+        Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
+        Material m = itemStack.getType();
+//        event.getPlayer().sendMessage(itemStack.toString());
+        // 如果为石斧头
+        if (m.equals(Material.STONE_AXE)) {
+            if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                event.getPlayer().setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
+                event.getPlayer().sendMessage("§6§l你已经设置了第一个点！");
+                event.setCancelled(true);
+                return;
+            } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                event.getPlayer().setMetadata("secondPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
+                event.setCancelled(true);
+                setLine(event.getPlayer());
+                return;
+            }
+        }
+
+    }
+
+    public void setLine(Player player) {
+
+        List<Location> list = new ArrayList<>();
+        Location firstPoint = null;
+        Location secondPoint = null;
+        // draw a line between two points
+        try {
+            firstPoint = (Location) player.getMetadata("firstPointOfLine").get(0).value();
+            secondPoint = (Location) player.getMetadata("secondPointOfLine").get(0).value();
+        } catch (Exception e) {
+            return;
+        }
+        player.sendMessage("§6§l你已经设置了第二个点！划线中...");
+        if (firstPoint == null || secondPoint == null) {
+            return;
+        }
+
+        player.removeMetadata("firstPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
+        player.removeMetadata("secondPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
+
+        int x1 = firstPoint.getBlockX();
+        int y1 = firstPoint.getBlockY();
+        int z1 = firstPoint.getBlockZ();
+        int x2 = secondPoint.getBlockX();
+        int y2 = secondPoint.getBlockY();
+        int z2 = secondPoint.getBlockZ();
+        int tipx = x1;
+        int tipy = y1;
+        int tipz = z1;
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+        int dz = Math.abs(z2 - z1);
+
+        if (dx + dy + dz == 0) {
+            list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            return;
+        }
+        int dMax = Math.max(Math.max(dx, dy), dz);
+        if (dMax == dx) {
+            for(int domstep = 0; domstep <= dx; domstep++) {
+                tipx = x1 + domstep * (x2 - x1 > 0 ? 1 : -1);
+                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dx) * (y2 - y1 > 0 ? 1 : -1));
+                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dx) * (z2 - z1 > 0 ? 1 : -1));
+                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            }
+        } else if (dMax == dy) {
+            for(int domstep = 0; domstep <= dy; domstep++) {
+                tipy = y1 + domstep * (y2 - y1 > 0 ? 1 : -1);
+                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dy) * (x2 - x1 > 0 ? 1 : -1));
+                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dy) * (z2 - z1 > 0 ? 1 : -1));
+                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            }
+        } else /* if (dMax == dz) */ {
+            for(int domstep = 0; domstep <= dz; domstep++) {
+                tipz = z1 + domstep * (z2 - z1 > 0 ? 1 : -1);
+                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dz) * (y2 - y1 > 0 ? 1 : -1));
+                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dz) * (x2 - x1 > 0 ? 1 : -1));
+                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            }
+        }
+        Material material = (Material) player.getMetadata("lineMaterial").get(0).value();
+        for(Location loc : list) {
+            loc.getBlock().setType(material);
+        }
+    }
 
     @EventHandler
     public void onPlayerSpawn(PlayerSpawnLocationEvent event) {
@@ -69,7 +163,7 @@ public class PlayerInteract implements Listener {
 
     public void welcomeGUI(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 9, "§6§lWelcome to SWJTU");
-        ItemStack item = new ItemStack(Material.BLACK_BED);
+        ItemStack item = new ItemStack(Material.DIAMOND_BLOCK);
         inventory.addItem(item);
         player.openInventory(inventory);
         inventory.setItem(0, item);
@@ -95,7 +189,6 @@ public class PlayerInteract implements Listener {
         // check if user have reported from player Metadata
 
 
-
         int gateX1 = (int) config.getConfig().getDouble("gatePos1.X");
         int gateY1 = (int) config.getConfig().getDouble("gatePos1.Z");
         int gateX2 = (int) config.getConfig().getDouble("gatePos2.X");
@@ -119,6 +212,12 @@ public class PlayerInteract implements Listener {
             player.sendTitle("§6§l欢迎来到西南交通大学！", "Welcome", 10, 50, 30);
             // 设置玩家已经报道为true
             player.setMetadata("hasReport", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), 1));
+            // 播放自定义音效
+            // 音乐文件
+//            String musicFile = "http://www.swjtu.edu.cn/music/music.mp3";
+            // 播放音乐
+//            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
         }
 
     }

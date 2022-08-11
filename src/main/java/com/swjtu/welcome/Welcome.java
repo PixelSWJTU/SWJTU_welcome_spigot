@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
 
+import javax.sound.sampled.Line;
+
 public final class Welcome extends JavaPlugin {
 
     @Override
@@ -21,6 +23,7 @@ public final class Welcome extends JavaPlugin {
         Bukkit.getPluginCommand("setReportStatus").setExecutor(new setReportStatus());
         Bukkit.getPluginCommand("MultiCmdExec").setExecutor(new MultiCmdExec());
         Bukkit.getPluginCommand("BlockSetter").setExecutor(new BlockSetter());
+        Bukkit.getPluginCommand("lineMaterial").setExecutor(new LineSetter());
         // Read config
         saveDefaultConfig();
 

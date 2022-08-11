@@ -33,14 +33,16 @@ commands:
     description: "Block setter"
     usage: /BlockSetter
     permission: BlockSetter.BlockSetter
-
+  lineMaterial:
+    description: "Line setter"
+    usage: /lineMaterial
+    permission: LineSetter.LineSetter
 
 
 permissions:
   getEssentialItem.getEssentialItem:
     description: "Allows the user to use the /getEssentialItem command"
     default: true
-
     maskChecker.maskChecker:
       description: "Allows the user to use the /maskChecker command"
       default: true
@@ -61,4 +63,7 @@ permissions:
         default: true
     BlockSetter:
         description: "Allows the user to use the /BlockSetter command"
+        default: true
+    LineSetter:
+        description: "Allows the user to use the /LineSetter command"
         default: true
