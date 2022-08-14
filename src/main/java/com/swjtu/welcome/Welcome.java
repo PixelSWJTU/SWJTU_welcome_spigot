@@ -2,10 +2,13 @@ package com.swjtu.welcome;
 
 import com.swjtu.welcome.commands.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
 
 import javax.sound.sampled.Line;
+import java.util.Arrays;
+import java.util.List;
 
 public final class Welcome extends JavaPlugin {
 
@@ -35,5 +38,7 @@ public final class Welcome extends JavaPlugin {
         // Plugin shutdown logic
         getLogger().info("Goodbye World!");
     }
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.swjtu.welcome;
 
 import org.bukkit.*;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,13 +33,20 @@ public class PlayerInteract implements Listener {
 //
 //        }
 //    }
+
+    public String getVersion(String rawVersion) {
+        return rawVersion.substring(rawVersion.indexOf("(MC: ") + 5, rawVersion.indexOf(")"));
+    }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+//        String version = event.getPlayer().getServer().getVersion();
+//        event.getPlayer().sendMessage(version);
         if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
             return;
         }
-        // 检测用户当前物品
-        ItemStack itemStack = event.getPlayer().getItemInHand();
+        ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
+
         // 用户点击的坐标
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
         Material m = itemStack.getType();
@@ -58,6 +66,10 @@ public class PlayerInteract implements Listener {
             }
         }
 
+    }
+
+    public Material getBlock(String item) {
+        return Material.getMaterial(item);
     }
 
     public void setLine(Player player) {
@@ -196,10 +208,6 @@ public class PlayerInteract implements Listener {
         int userX = (int) location.getX();
         int userY = (int) location.getZ();
         double distance = Math.sqrt(Math.pow(gateX1 - location.getX(), 2) + Math.pow(gateY1 - location.getY(), 2));
-//        player.sendMessage("距离校门" + distance);
-//        player.sendMessage("校门1" + gateX1 + " " + gateY1);
-//        player.sendMessage("校门2" + gateX2 + " " + gateY2);
-//        player.sendMessage("==============================");
         if (userX >= gateX1 && userX <= gateX2 && userY >= gateY1 && userY <= gateY2) {
             if (player.hasMetadata("hasReport")) {
                 // check if it is 1
@@ -212,11 +220,6 @@ public class PlayerInteract implements Listener {
             player.sendTitle("§6§l欢迎来到西南交通大学！", "Welcome", 10, 50, 30);
             // 设置玩家已经报道为true
             player.setMetadata("hasReport", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), 1));
-            // 播放自定义音效
-            // 音乐文件
-//            String musicFile = "http://www.swjtu.edu.cn/music/music.mp3";
-            // 播放音乐
-//            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
         }
 
