@@ -13,14 +13,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import org.bukkit.Particle.*;
-
+import com.swjtu.welcome.utils.*;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.lang.Runnable;
 
 public class PlayerInteract implements Listener {
     // 玩家拿到物品右键空气
@@ -157,19 +160,27 @@ public class PlayerInteract implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws UnsupportedEncodingException {
         Player player = event.getPlayer();
+//        new utils().playParticle(player);
+//        Bukkit.getScheduler().runTaskAsynchronously(Welcome.getProvidingPlugin(Welcome.class),new Runnable() {
+//            @Override
+//            public void run() {
+//        new utils().playParticle(player);
+//            }
+//        });
+
         player.sendMessage("Welcome to the server!");
 
         String title = new String("§6欢迎来到西南交通大学！".getBytes(), StandardCharsets.UTF_8);
         player.sendTitle(title, "Welcome", 10, 50, 30);
         player.setGameMode(GameMode.CREATIVE);
-        player.performCommand("gamemode 1");
+
     }
 
     @EventHandler
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         player.setGameMode(GameMode.CREATIVE);
-        player.performCommand("gamemode 1");
+//        player.performCommand("gamemode 1");
     }
 
 
@@ -220,7 +231,9 @@ public class PlayerInteract implements Listener {
             player.sendTitle("§6§l欢迎来到西南交通大学！", "Welcome", 10, 50, 30);
             // 设置玩家已经报道为true
             player.setMetadata("hasReport", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), 1));
-
+            // 穿上防护服
+            player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
+            new utils().playParticle(player);
         }
 
     }

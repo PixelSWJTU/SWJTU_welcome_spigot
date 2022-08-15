@@ -1,13 +1,11 @@
 package com.swjtu.welcome.commands;
 
-import com.sun.java.accessibility.util.internal.ListTranslator;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
