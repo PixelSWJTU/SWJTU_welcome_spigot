@@ -1,7 +1,8 @@
 package com.swjtu.welcome;
 
+import com.swjtu.welcome.utils.Fireworks;
+import com.swjtu.welcome.utils.SpecialItemGenerator;
 import org.bukkit.*;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,20 +11,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.profile.PlayerProfile;
-import org.bukkit.profile.PlayerTextures;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-import org.bukkit.Particle.*;
-import com.swjtu.welcome.utils.*;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.lang.Runnable;
 
 public class PlayerInteract implements Listener {
     // 玩家拿到物品右键空气
@@ -208,10 +204,6 @@ public class PlayerInteract implements Listener {
         //read the position of the gate
         Plugin config = Welcome.getProvidingPlugin(Welcome.class);
 
-//        player.setMetadata("hasReport", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), true));
-        // check if user have reported from player Metadata
-
-
         int gateX1 = (int) config.getConfig().getDouble("gatePos1.X");
         int gateY1 = (int) config.getConfig().getDouble("gatePos1.Z");
         int gateX2 = (int) config.getConfig().getDouble("gatePos2.X");
@@ -232,8 +224,11 @@ public class PlayerInteract implements Listener {
             // 设置玩家已经报道为true
             player.setMetadata("hasReport", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), 1));
             // 穿上防护服
-            player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
-            new utils().playParticle(player);
+            SpecialItemGenerator spi = new SpecialItemGenerator();
+            ItemStack uniform = spi.generateNewUniforms();
+            player.getInventory().setChestplate(uniform);
+            Fireworks fw = new Fireworks(player);
+            fw.playParticle();
         }
 
     }
