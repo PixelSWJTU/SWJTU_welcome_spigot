@@ -1,5 +1,8 @@
 package com.swjtu.welcome;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.function.pattern.Pattern;
 import com.swjtu.welcome.utils.Fireworks;
 import com.swjtu.welcome.utils.SpecialItemGenerator;
 import org.bukkit.*;
@@ -22,16 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class PlayerInteract implements Listener {
-    // 玩家拿到物品右键空气
-//    @EventHandler
-//    public void onPlayerInteract(PlayerInteractEvent event) {
-//
-//        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-//            Inventory inventory = Bukkit.createInventory(null, 9, "§6§l欢迎来到服务器");
-//
-//
-//        }
-//    }
 
     public String getVersion(String rawVersion) {
         return rawVersion.substring(rawVersion.indexOf("(MC: ") + 5, rawVersion.indexOf(")"));
@@ -52,6 +45,12 @@ public class PlayerInteract implements Listener {
 //        event.getPlayer().sendMessage(itemStack.toString());
         // 如果为石斧头
         if (m.equals(Material.STONE_AXE)) {
+            // 检测用户有无权限
+            // debug
+//            if (!event.getPlayer().hasPermission("welcome.drawline")) {
+//                event.getPlayer().sendMessage(ChatColor.RED + "你没有权限使用该命令");
+//                return;
+//            }
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 event.getPlayer().setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
                 event.getPlayer().sendMessage("§6§l你已经设置了第一个点！");
@@ -229,6 +228,8 @@ public class PlayerInteract implements Listener {
             player.getInventory().setChestplate(uniform);
             Fireworks fw = new Fireworks(player);
             fw.playParticle();
+            player.spawnParticle(Particle.FIREWORKS_SPARK, player.getLocation(), 100);
+            player.spawnParticle(Particle.EXPLOSION_LARGE, player.getLocation(), 100);
         }
 
     }

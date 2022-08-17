@@ -54,6 +54,10 @@
 
     <repositories>
         <repository>
+            <id>enginehub</id>
+            <url>https://maven.enginehub.org/repo/ </url>
+        </repository>
+        <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -61,6 +65,7 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+
     </repositories>
 
     <dependencies>
@@ -83,5 +88,12 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-core</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
+
     </dependencies>
 </project>
