@@ -1,8 +1,7 @@
 package com.swjtu.welcome;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.function.pattern.Pattern;
+
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.swjtu.welcome.utils.Fireworks;
 import com.swjtu.welcome.utils.SpecialItemGenerator;
 import org.bukkit.*;
@@ -17,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import sun.jvm.hotspot.debugger.SymbolLookup;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -168,6 +168,21 @@ public class PlayerInteract implements Listener {
         String title = new String("§6欢迎来到西南交通大学！".getBytes(), StandardCharsets.UTF_8);
         player.sendTitle(title, "Welcome", 10, 50, 30);
         player.setGameMode(GameMode.CREATIVE);
+        Plugin config = Welcome.getProvidingPlugin(Welcome.class);
+        config.reloadConfig();
+        Boolean isEnable = (Boolean) config.getConfig().get("resEnable");
+        player.sendMessage("将要使用服务器材质包: " + isEnable);
+        if (Boolean.TRUE.equals(isEnable) || config.getConfig().get("resEnable") == "true") {
+            String resPack = config.getConfig().getString("resPackURL");
+            player.sendMessage("resPack: " + resPack);
+            if (resPack == null ) {
+                resPack = "";
+                config.saveConfig();
+            } else {
+                player.setResourcePack(resPack);
+            }
+        }
+
 
     }
 

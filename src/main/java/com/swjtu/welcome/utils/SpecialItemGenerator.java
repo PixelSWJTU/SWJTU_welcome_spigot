@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SpecialItemGenerator {
     public ItemStack generateNewUniforms() {
-        ItemStack res = new ItemStack(Material.DIAMOND_CHESTPLATE);
+        ItemStack res = new ItemStack(Material.ELYTRA);
         ItemMeta im = res.getItemMeta();
         assert im != null;
         im.setDisplayName("§6§l西南交通大学校服");
