@@ -17,7 +17,7 @@ public final class Welcome extends JavaPlugin {
         // Plugin startup logic
         // hello world
 
-        Bukkit.getPluginManager().registerEvents(new PlayerInteract(), this);
+//        Bukkit.getPluginManager().registerEvents(, this);
         // register cmd
         Bukkit.getPluginCommand("getEssentialItem").setExecutor(new getEssentialItem());
         Bukkit.getPluginCommand("maskChecker").setExecutor(new maskChecker());
@@ -27,6 +27,7 @@ public final class Welcome extends JavaPlugin {
         Bukkit.getPluginCommand("MultiCmdExec").setExecutor(new MultiCmdExec());
         Bukkit.getPluginCommand("BlockSetter").setExecutor(new BlockSetter());
         Bukkit.getPluginCommand("lineMaterial").setExecutor(new LineSetter());
+        Bukkit.getPluginCommand("ReloadConfig").setExecutor(new ReloadConfig());
         // Read config
         saveDefaultConfig();
 

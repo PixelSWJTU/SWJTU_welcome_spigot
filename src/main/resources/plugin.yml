@@ -37,7 +37,10 @@ commands:
     description: "Line setter"
     usage: /lineMaterial
     permission: LineSetter.LineSetter
-
+  ReloadConfig:
+    description: "Reload config"
+    usage: /ReloadConfig
+    permission: ReloadConfig.ReloadConfig
 
 permissions:
   getEssentialItem.getEssentialItem:
@@ -66,4 +69,7 @@ permissions:
         default: true
     LineSetter:
         description: "Allows the user to use the /LineSetter command"
+        default: true
+    ReloadConfig:
+        description: "Allows the user to use the /ReloadConfig command"
         default: true

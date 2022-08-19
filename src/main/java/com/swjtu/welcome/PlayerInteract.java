@@ -169,7 +169,7 @@ public class PlayerInteract implements Listener {
         player.sendTitle(title, "Welcome", 10, 50, 30);
         player.setGameMode(GameMode.CREATIVE);
         Plugin config = Welcome.getProvidingPlugin(Welcome.class);
-        config.reloadConfig();
+//        config.reloadConfig();
         Boolean isEnable = (Boolean) config.getConfig().get("resEnable");
         player.sendMessage("将要使用服务器材质包: " + isEnable);
         if (Boolean.TRUE.equals(isEnable) || config.getConfig().get("resEnable") == "true") {
