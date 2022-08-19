@@ -11,6 +11,7 @@ public class ReloadConfig implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Plugin config = Welcome.getProvidingPlugin(Welcome.class);
         config.reloadConfig();
+        sender.sendMessage("§3§l配置文件已重载！");
         return false;
     }
 }

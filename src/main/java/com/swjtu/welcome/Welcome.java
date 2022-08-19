@@ -17,7 +17,7 @@ public final class Welcome extends JavaPlugin {
         // Plugin startup logic
         // hello world
 
-//        Bukkit.getPluginManager().registerEvents(, this);
+        Bukkit.getPluginManager().registerEvents(new PlayerInteract(), this);
         // register cmd
         Bukkit.getPluginCommand("getEssentialItem").setExecutor(new getEssentialItem());
         Bukkit.getPluginCommand("maskChecker").setExecutor(new maskChecker());
