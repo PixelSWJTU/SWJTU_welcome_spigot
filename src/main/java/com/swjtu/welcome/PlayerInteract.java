@@ -5,6 +5,8 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.swjtu.welcome.utils.Fireworks;
 import com.swjtu.welcome.utils.SpecialItemGenerator;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +36,7 @@ public class PlayerInteract implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
 //        String version = event.getPlayer().getServer().getVersion();
 //        event.getPlayer().sendMessage(version);
-        if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
             return;
         }
         ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
@@ -70,6 +72,55 @@ public class PlayerInteract implements Listener {
         return Material.getMaterial(item);
     }
 
+
+    public void drawLine(Location firstPoint, Location secondPoint, Material material, Player player) {
+        List<Location> list = new ArrayList<>();
+        int x1 = firstPoint.getBlockX();
+        int y1 = firstPoint.getBlockY();
+        int z1 = firstPoint.getBlockZ();
+        int x2 = secondPoint.getBlockX();
+        int y2 = secondPoint.getBlockY();
+        int z2 = secondPoint.getBlockZ();
+        int tipx = x1;
+        int tipy = y1;
+        int tipz = z1;
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+        int dz = Math.abs(z2 - z1);
+
+        if (dx + dy + dz == 0) {
+            list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            return;
+        }
+        int dMax = Math.max(Math.max(dx, dy), dz);
+        if (dMax == dx) {
+            for (int domstep = 0; domstep <= dx; domstep++) {
+                tipx = x1 + domstep * (x2 - x1 > 0 ? 1 : -1);
+                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dx) * (y2 - y1 > 0 ? 1 : -1));
+                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dx) * (z2 - z1 > 0 ? 1 : -1));
+                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            }
+        } else if (dMax == dy) {
+            for (int domstep = 0; domstep <= dy; domstep++) {
+                tipy = y1 + domstep * (y2 - y1 > 0 ? 1 : -1);
+                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dy) * (x2 - x1 > 0 ? 1 : -1));
+                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dy) * (z2 - z1 > 0 ? 1 : -1));
+                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            }
+        } else /* if (dMax == dz) */ {
+            for (int domstep = 0; domstep <= dz; domstep++) {
+                tipz = z1 + domstep * (z2 - z1 > 0 ? 1 : -1);
+                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dz) * (y2 - y1 > 0 ? 1 : -1));
+                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dz) * (x2 - x1 > 0 ? 1 : -1));
+                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+            }
+        }
+//        Material material = (Material) player.getMetadata("lineMaterial").get(0).value();
+        for (Location loc : list) {
+            loc.getBlock().setType(material);
+        }
+    }
+
     public void setLine(Player player) {
 
         List<Location> list = new ArrayList<>();
@@ -90,50 +141,51 @@ public class PlayerInteract implements Listener {
         player.removeMetadata("firstPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
         player.removeMetadata("secondPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
 
-        int x1 = firstPoint.getBlockX();
-        int y1 = firstPoint.getBlockY();
-        int z1 = firstPoint.getBlockZ();
-        int x2 = secondPoint.getBlockX();
-        int y2 = secondPoint.getBlockY();
-        int z2 = secondPoint.getBlockZ();
-        int tipx = x1;
-        int tipy = y1;
-        int tipz = z1;
-        int dx = Math.abs(x2 - x1);
-        int dy = Math.abs(y2 - y1);
-        int dz = Math.abs(z2 - z1);
-
-        if (dx + dy + dz == 0) {
-            list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
-            return;
-        }
-        int dMax = Math.max(Math.max(dx, dy), dz);
-        if (dMax == dx) {
-            for(int domstep = 0; domstep <= dx; domstep++) {
-                tipx = x1 + domstep * (x2 - x1 > 0 ? 1 : -1);
-                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dx) * (y2 - y1 > 0 ? 1 : -1));
-                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dx) * (z2 - z1 > 0 ? 1 : -1));
-                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
-            }
-        } else if (dMax == dy) {
-            for(int domstep = 0; domstep <= dy; domstep++) {
-                tipy = y1 + domstep * (y2 - y1 > 0 ? 1 : -1);
-                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dy) * (x2 - x1 > 0 ? 1 : -1));
-                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dy) * (z2 - z1 > 0 ? 1 : -1));
-                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
-            }
-        } else /* if (dMax == dz) */ {
-            for(int domstep = 0; domstep <= dz; domstep++) {
-                tipz = z1 + domstep * (z2 - z1 > 0 ? 1 : -1);
-                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dz) * (y2 - y1 > 0 ? 1 : -1));
-                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dz) * (x2 - x1 > 0 ? 1 : -1));
-                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
-            }
-        }
-        Material material = (Material) player.getMetadata("lineMaterial").get(0).value();
-        for(Location loc : list) {
-            loc.getBlock().setType(material);
-        }
+        drawLine(firstPoint, secondPoint, (Material) player.getMetadata("lineMaterial").get(0).value(), player);
+//        int x1 = firstPoint.getBlockX();
+//        int y1 = firstPoint.getBlockY();
+//        int z1 = firstPoint.getBlockZ();
+//        int x2 = secondPoint.getBlockX();
+//        int y2 = secondPoint.getBlockY();
+//        int z2 = secondPoint.getBlockZ();
+//        int tipx = x1;
+//        int tipy = y1;
+//        int tipz = z1;
+//        int dx = Math.abs(x2 - x1);
+//        int dy = Math.abs(y2 - y1);
+//        int dz = Math.abs(z2 - z1);
+//
+//        if (dx + dy + dz == 0) {
+//            list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+//            return;
+//        }
+//        int dMax = Math.max(Math.max(dx, dy), dz);
+//        if (dMax == dx) {
+//            for(int domstep = 0; domstep <= dx; domstep++) {
+//                tipx = x1 + domstep * (x2 - x1 > 0 ? 1 : -1);
+//                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dx) * (y2 - y1 > 0 ? 1 : -1));
+//                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dx) * (z2 - z1 > 0 ? 1 : -1));
+//                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+//            }
+//        } else if (dMax == dy) {
+//            for(int domstep = 0; domstep <= dy; domstep++) {
+//                tipy = y1 + domstep * (y2 - y1 > 0 ? 1 : -1);
+//                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dy) * (x2 - x1 > 0 ? 1 : -1));
+//                tipz = (int) Math.round(z1 + domstep * ((double) dz) / ((double) dy) * (z2 - z1 > 0 ? 1 : -1));
+//                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+//            }
+//        } else /* if (dMax == dz) */ {
+//            for(int domstep = 0; domstep <= dz; domstep++) {
+//                tipz = z1 + domstep * (z2 - z1 > 0 ? 1 : -1);
+//                tipy = (int) Math.round(y1 + domstep * ((double) dy) / ((double) dz) * (y2 - y1 > 0 ? 1 : -1));
+//                tipx = (int) Math.round(x1 + domstep * ((double) dx) / ((double) dz) * (x2 - x1 > 0 ? 1 : -1));
+//                list.add(new Location(firstPoint.getWorld(), tipx, tipy, tipz));
+//            }
+//        }
+//        Material material = (Material) player.getMetadata("lineMaterial").get(0).value();
+//        for(Location loc : list) {
+//            loc.getBlock().setType(material);
+//        }
     }
 
     @EventHandler
@@ -175,7 +227,7 @@ public class PlayerInteract implements Listener {
         if (Boolean.TRUE.equals(isEnable) || config.getConfig().get("resEnable") == "true") {
             String resPack = config.getConfig().getString("resPackURL");
             player.sendMessage("resPack: " + resPack);
-            if (resPack == null ) {
+            if (resPack == null) {
                 resPack = "";
                 config.saveConfig();
             } else {
@@ -210,8 +262,84 @@ public class PlayerInteract implements Listener {
         }
     }
 
+    public ArrayList<Location> scanLine(Material stopMaterial, BlockFace facing, int maxBlock, Location startLocation) {
+        double x = startLocation.getX();
+        double y = startLocation.getY();
+        double z = startLocation.getZ();
+        // create res array
+        ArrayList<Location> res = new ArrayList<>();
+        if (facing.equals(BlockFace.NORTH) || facing.equals(BlockFace.SOUTH)) {
+            // x
+            // left side
+            for (int i = 0; i < maxBlock; i++) {
+                Location newLocation = new Location(startLocation.getWorld(), x + i , y, z);
+                if (newLocation.getBlock().getType().equals(stopMaterial)) {
+                    res.add(new Location(startLocation.getWorld(), x + i - 1, y-1, z));
+                    break;
+                }
+            }
+
+            // right side
+            for (int i = 0; i < maxBlock; i++) {
+                Location newLocation = new Location(startLocation.getWorld(), x - i , y , z);
+                if (newLocation.getBlock().getType().equals(stopMaterial)) {
+                    res.add(new Location(startLocation.getWorld(), x - i + 1 , y-1, z));
+                    break;
+                }
+            }
+
+        } else if (facing.equals(BlockFace.EAST) || facing.equals(BlockFace.WEST)) {
+            // z
+            // left side
+            for (int i = 0; i < maxBlock; i++) {
+                Location newLocation = new Location(startLocation.getWorld(), x, y , z + i );
+                if (newLocation.getBlock().getType().equals(stopMaterial)) {
+                    res.add(new Location(startLocation.getWorld(), x, y-1, z + i - 1));
+                    break;
+                }
+            }
+
+            // right side
+            for (int i = 0; i < maxBlock; i++) {
+                Location newLocation = new Location(startLocation.getWorld(), x, y , z - i );
+                if (newLocation.getBlock().getType().equals(stopMaterial)) {
+                    res.add(new Location(startLocation.getWorld(), x, y-1, z - i + 1));
+                    break;
+                }
+            }
+
+        }
+        if (res.size() == 2) {
+            return res;
+        } else {
+            return null;
+        }
+    }
+
+    public void drawLineBetweenPlayer(PlayerMoveEvent event) {
+        event.getPlayer().sendMessage(event.getPlayer().getFacing().toString());
+        Material stopMaterial = Material.STONE;
+        BlockFace facing = event.getPlayer().getFacing();
+        int maxBlock = 20;
+        Location startLocation = event.getPlayer().getLocation();
+        ArrayList<Location> res = scanLine(stopMaterial, facing, maxBlock, startLocation);
+        if (res == null) {
+//            event.getPlayer().sendMessage("res is null");
+            return;
+        }
+//        event.getPlayer().sendMessage("res is not null and size is " + res.size());
+        Location firstPoint = res.get(0);
+//        event.getPlayer().sendMessage("firstPoint is " + firstPoint.getX() + " " + firstPoint.getY() + " " + firstPoint.getZ());
+
+        Location secondPoint = res.get(1);
+//        event.getPlayer().sendMessage("secondPoint is " + secondPoint.getX() + " " + secondPoint.getY() + " " + secondPoint.getZ());
+        drawLine(firstPoint, secondPoint, (Material) event.getPlayer().getMetadata("lineMaterial").get(0).value(), event.getPlayer());
+
+    }
+
     @EventHandler
     public void PlayerPosListener(PlayerMoveEvent event) {
+        drawLineBetweenPlayer(event);
         // monitor if user have moved to the gate
         Player player = event.getPlayer();
         Location location = player.getLocation();

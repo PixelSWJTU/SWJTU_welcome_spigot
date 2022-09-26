@@ -73,3 +73,6 @@ permissions:
     ReloadConfig:
         description: "Allows the user to use the /ReloadConfig command"
         default: true
+    lineMaterial:
+        description: "Allows the user to use the /lineMaterial command"
+        default: true
