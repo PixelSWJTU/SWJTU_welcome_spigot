@@ -267,14 +267,15 @@ public class PlayerInteract implements Listener {
         // check switch is on or off
         //(Material) player.getMetadata("lineMaterial").get(0).value();
         int status = 0;
-        try {
-            status = (Integer) event.getPlayer().getMetadata("roadSwitch").get(0).value();
-        } catch (Exception e) {
+        // test if roadSwitch is null
+        if (event.getPlayer().getMetadata("roadSwitch").size() == 0) {
             event.getPlayer().sendMessage("Please set roadSwitch");
-            return;
+            // set to 0
+            event.getPlayer().setMetadata("roadSwitch", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), 0));
+        } else {
+            status = (Integer) event.getPlayer().getMetadata("roadSwitch").get(0).value();
         }
         if (status == 0) {
-            event.getPlayer().sendMessage("Please set roadSwitch");
             return;
 
         }
@@ -295,8 +296,41 @@ public class PlayerInteract implements Listener {
 //        event.getPlayer().sendMessage("firstPoint is " + firstPoint.getX() + " " + firstPoint.getY() + " " + firstPoint.getZ());
 
         Location secondPoint = res.get(1);
+        // middle point
+
+
 //        event.getPlayer().sendMessage("secondPoint is " + secondPoint.getX() + " " + secondPoint.getY() + " " + secondPoint.getZ());
+        // test linematerial is null
+        if (event.getPlayer().getMetadata("lineMaterial").size() == 0) {
+            event.getPlayer().sendMessage("lineMaterial is null and set to STONE");
+            event.getPlayer().setMetadata("lineMaterial", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), Material.STONE));
+
+        }
         drawLine(firstPoint, secondPoint, (Material) event.getPlayer().getMetadata("lineMaterial").get(0).value(), event.getPlayer());
+
+        // draw mid point
+        Location midPoint = new Location(startLocation.getWorld(), (firstPoint.getX() + secondPoint.getX()) / 2, (firstPoint.getY() + secondPoint.getY()) / 2, (firstPoint.getZ() + secondPoint.getZ()) / 2);
+        // test roadLine is null
+        if (event.getPlayer().getMetadata("roadLine").size() == 0) {
+            event.getPlayer().sendMessage("middle line is null and set it to off");
+            event.getPlayer().setMetadata("roadLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), "off"));
+        }
+        if (event.getPlayer().getMetadata("roadLine").get(0).value().equals("single")) {
+            midPoint.getBlock().setType((Material) Objects.requireNonNull(event.getPlayer().getMetadata("midLineMaterial").get(0).value()));
+        } else if (event.getPlayer().getMetadata("roadLine").get(0).value().equals("double")) {
+            // two point on the left and right 1 block
+            Location left, right;
+            if (facing.equals(BlockFace.EAST) || facing.equals(BlockFace.WEST)) {
+                left = new Location(startLocation.getWorld(), midPoint.getX(), midPoint.getY(), midPoint.getZ() + 1);
+                right = new Location(startLocation.getWorld(), midPoint.getX(), midPoint.getY(), midPoint.getZ() - 1);
+            } else {
+                left = new Location(startLocation.getWorld(), midPoint.getX() + 1, midPoint.getY(), midPoint.getZ());
+                right = new Location(startLocation.getWorld(), midPoint.getX() - 1, midPoint.getY(), midPoint.getZ());
+            }
+
+            left.getBlock().setType((Material) Objects.requireNonNull(event.getPlayer().getMetadata("midLineMaterial").get(0).value()));
+            right.getBlock().setType((Material) Objects.requireNonNull(event.getPlayer().getMetadata("midLineMaterial").get(0).value()));
+        }
 
     }
 

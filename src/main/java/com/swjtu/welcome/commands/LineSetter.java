@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 public class LineSetter implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0) {
+        if (args.length != 2) {
             sender.sendMessage("§6§用错了！");
             return false;
         }
-        String materialName = args[0];
+        String materialType = args[0];
+        String materialName = args[1];
         Material material = Material.getMaterial(materialName);
         Material material1 = Material.getMaterial(materialName.toUpperCase(Locale.ROOT));
 
@@ -31,20 +32,31 @@ public class LineSetter implements CommandExecutor, TabCompleter {
         }
         sender.sendMessage("§6§l你已经设置了线的物品为" + materialName + "！");
         Material finalMaterial = material == null ? material1 : material;
+
+        String key = "";
+        if (materialType.equals("line")) {
+            key = "lineMaterial";
+        } else if (materialType.equals("midline")) {
+            key = "midLineMaterial";
+        }
+
         sender.getServer().getPlayer(sender.getName()).setMetadata(
-                "lineMaterial", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), finalMaterial));
+                key, new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), finalMaterial));
         return true;
     }
 
     //tab complete
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
+        if (args.length == 2) {
             // all material names
             List<String> sub = Arrays.asList(Material.values()).stream().map(Material::name).collect(Collectors.toList());
-            sub.removeIf(s -> !s.startsWith(args[0]));
+            sub.removeIf(s -> !s.startsWith(args[1]));
             return sub;
 
+        } else if (args.length == 1) {
+            // line or midline
+            return Arrays.asList("line", "midline").stream().filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
         }
         return null;
     }
