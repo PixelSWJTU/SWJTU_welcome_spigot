@@ -41,6 +41,9 @@ commands:
     description: "Reload config"
     usage: /ReloadConfig
     permission: ReloadConfig.ReloadConfig
+  roadSwitch:
+    description: "set road material"
+    permission: roadSwitch.roadSwitch
 
 permissions:
   getEssentialItem.getEssentialItem:
@@ -75,4 +78,7 @@ permissions:
         default: true
     lineMaterial:
         description: "Allows the user to use the /lineMaterial command"
+        default: true
+    roadSwitch:
+        description: "Allow the user to use the /roadSwitch command"
         default: true
