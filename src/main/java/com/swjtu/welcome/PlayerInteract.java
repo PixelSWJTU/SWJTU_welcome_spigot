@@ -14,7 +14,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
@@ -44,7 +43,7 @@ public class PlayerInteract implements Listener {
         if (m.equals(Material.STONE_AXE)) {
 
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                if(event.getPlayer().getMetadata("firstPointOfLine").size() != 0) {
+                if (event.getPlayer().getMetadata("firstPointOfLine").size() != 0) {
                     event.getPlayer().sendMessage("§6§l你已经更改第一个点！");
                 } else {
                     event.getPlayer().sendMessage("§6§l你已经设置第一个点！");
@@ -152,7 +151,7 @@ public class PlayerInteract implements Listener {
     public void onPlayerSpawn(PlayerSpawnLocationEvent event) {
         Location location = event.getSpawnLocation();
         // particale effect
-        location.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, location, 100);
+        Objects.requireNonNull(location.getWorld()).spawnParticle(Particle.FIREWORKS_SPARK, location, 100);
         event.getPlayer().sendMessage("Spawn at " + location.getX() + " " + location.getY() + " " + location.getZ());
 
     }
@@ -286,8 +285,7 @@ public class PlayerInteract implements Listener {
 
         }
 
-
-        event.getPlayer().sendMessage(event.getPlayer().getFacing().toString());
+//        event.getPlayer().sendMessage(event.getPlayer().getFacing().toString());
         Material stopMaterial = Material.SMOOTH_STONE_SLAB;
         BlockFace facing = event.getPlayer().getFacing();
         int maxBlock = 20;
