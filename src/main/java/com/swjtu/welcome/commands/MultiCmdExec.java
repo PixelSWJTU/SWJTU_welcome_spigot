@@ -27,16 +27,8 @@ public class MultiCmdExec implements CommandExecutor {
         // 每0.5秒执行一次
         for (String cmdStr : cmdList) {
             String cmdStrTrim = cmdStr.trim();
-
-            // 0.5秒后执行
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            // 执行命令
+            // 异步执行
             sender.getServer().dispatchCommand(sender, cmdStrTrim);
-            sender.sendMessage("§3§l你执行了命令：" + cmdStrTrim);
         }
 
 

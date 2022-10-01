@@ -32,8 +32,6 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-//        String version = event.getPlayer().getServer().getVersion();
-//        event.getPlayer().sendMessage(version);
         if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
             return;
         }
@@ -42,18 +40,16 @@ public class PlayerInteract implements Listener {
         // 用户点击的坐标
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
         Material m = itemStack.getType();
-//        event.getPlayer().sendMessage(itemStack.toString());
         // 如果为石斧头
         if (m.equals(Material.STONE_AXE)) {
-            // 检测用户有无权限
-            // debug
-//            if (!event.getPlayer().hasPermission("welcome.drawline")) {
-//                event.getPlayer().sendMessage(ChatColor.RED + "你没有权限使用该命令");
-//                return;
-//            }
+
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if(event.getPlayer().getMetadata("firstPointOfLine").size() != 0) {
+                    event.getPlayer().sendMessage("§6§l你已经更改第一个点！");
+                } else {
+                    event.getPlayer().sendMessage("§6§l你已经设置第一个点！");
+                }
                 event.getPlayer().setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
-                event.getPlayer().sendMessage("§6§l你已经设置了第一个点！");
                 event.setCancelled(true);
                 return;
             } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
@@ -131,6 +127,13 @@ public class PlayerInteract implements Listener {
         } catch (Exception e) {
             return;
         }
+        // check if user has set lineMaterial
+        if (player.getMetadata("lineMaterial").size() == 0) {
+            player.sendMessage("§6§l你没有设置划线材质，已设置为默认的平滑石砖");
+            player.setMetadata("lineMaterial", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), Material.SMOOTH_STONE_SLAB));
+        }
+
+
         player.sendMessage("§6§l你已经设置了第二个点！划线中...");
         if (firstPoint == null || secondPoint == null) {
             return;
@@ -139,7 +142,10 @@ public class PlayerInteract implements Listener {
         player.removeMetadata("firstPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
         player.removeMetadata("secondPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
 
+
         drawLine(firstPoint, secondPoint, (Material) player.getMetadata("lineMaterial").get(0).value(), player);
+
+        player.setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), secondPoint));
     }
 
     @EventHandler
