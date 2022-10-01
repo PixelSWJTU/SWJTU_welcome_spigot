@@ -288,7 +288,7 @@ public class PlayerInteract implements Listener {
 //        event.getPlayer().sendMessage(event.getPlayer().getFacing().toString());
         Material stopMaterial = Material.SMOOTH_STONE_SLAB;
         BlockFace facing = event.getPlayer().getFacing();
-        int maxBlock = 20;
+        int maxBlock = 50;
         Location startLocation = event.getPlayer().getLocation();
         ArrayList<Location> res = scanLine(stopMaterial, facing, maxBlock, startLocation);
         if (res == null) {
