@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.bukkit.inventory.EquipmentSlot.OFF_HAND;
+
 public class PlayerInteract implements Listener {
 
     public String getVersion(String rawVersion) {
@@ -31,34 +33,41 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+        // 添加对副手的检测，不响应副手
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getHand().equals(OFF_HAND)) {
             return;
         }
-        ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
 
+        ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
         // 用户点击的坐标
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
+        Player player = event.getPlayer();
         Material m = itemStack.getType();
-        // 如果为石斧头
-        if (m.equals(Material.STONE_AXE)) {
 
+        if (m.equals(Material.STONE_AXE)) {
+            event.setCancelled(true);
+            System.out.println("event");
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-                if (event.getPlayer().getMetadata("firstPointOfLine").size() != 0) {
-                    event.getPlayer().sendMessage("§6§l你已经更改第一个点！");
-                } else {
-                    event.getPlayer().sendMessage("§6§l你已经设置第一个点！");
-                }
-                event.getPlayer().setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
-                event.setCancelled(true);
-                return;
+                // 左键敲击是取消上一次连线、重新选点
+                undoSetLine(event.getPlayer());
             } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-                event.getPlayer().setMetadata("secondPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
-                event.setCancelled(true);
-                setLine(event.getPlayer());
-                return;
+                // 如果设置了连线材质，则只在敲击对应材质的方块时才进行连线操作，减少误触的可能性
+                if (player.getMetadata("lineMaterial").size() != 0) {
+                    if (!event.getClickedBlock().getType().equals(player.getMetadata("lineMaterial").get(0).value())) {
+                        return;
+                    }
+                }
+                // 右键敲击是选中
+                if (event.getPlayer().getMetadata("firstPointOfLine").size() != 0) {
+                    // 如果已经存在firstPointOfLine，则应该设置secondPointOfLine连线
+                    event.getPlayer().setMetadata("secondPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
+                    setLine(event.getPlayer());
+                } else {
+                    // 如果不存在，则设置第一个点
+                    event.getPlayer().setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
+                }
             }
         }
-
     }
 
     public Material getBlock(String item) {
@@ -114,6 +123,35 @@ public class PlayerInteract implements Listener {
         }
     }
 
+    // undo the last line-set operation (set AIR)
+    public void undoSetLine(Player player) {
+        Location firstPoint = null;
+        Location secondPoint = null;
+        // draw a line between two points
+        try {
+            firstPoint = (Location) player.getMetadata("pointOfPreLine").get(0).value();
+            secondPoint = (Location) player.getMetadata("firstPointOfLine").get(0).value();
+        } catch (Exception e) {
+            return;
+        }
+        if (firstPoint == null || secondPoint == null) {
+            return;
+        }
+        System.out.println("draw AIR");
+        drawLine(firstPoint, secondPoint, Material.AIR, player);
+
+        if (player.getMetadata("lineMaterial").size() == 0) {
+            player.sendMessage("§6§l你没有设置划线材质，已设置为默认的平滑石砖");
+            player.setMetadata("lineMaterial", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), Material.SMOOTH_STONE_SLAB));
+        }
+        firstPoint.getBlock().setType((Material) player.getMetadata("lineMaterial").get(0).value());
+        secondPoint.getBlock().setType((Material) player.getMetadata("lineMaterial").get(0).value());
+
+        player.removeMetadata("firstPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
+        player.removeMetadata("secondPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
+        player.removeMetadata("pointOfPreLine", Welcome.getProvidingPlugin(Welcome.class));
+    }
+    
     public void setLine(Player player) {
 
         List<Location> list = new ArrayList<>();
@@ -132,18 +170,18 @@ public class PlayerInteract implements Listener {
             player.setMetadata("lineMaterial", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), Material.SMOOTH_STONE_SLAB));
         }
 
-
-        player.sendMessage("§6§l你已经设置了第二个点！划线中...");
+        player.sendMessage("§6§l划线中...");
         if (firstPoint == null || secondPoint == null) {
             return;
         }
 
         player.removeMetadata("firstPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
         player.removeMetadata("secondPointOfLine", Welcome.getProvidingPlugin(Welcome.class));
-
-
+        
         drawLine(firstPoint, secondPoint, (Material) player.getMetadata("lineMaterial").get(0).value(), player);
 
+        // store the firstPointOfLine in the pointOfPreLine to undo the last line-set operation.
+        player.setMetadata("pointOfPreLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), firstPoint));
         player.setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), secondPoint));
     }
 
