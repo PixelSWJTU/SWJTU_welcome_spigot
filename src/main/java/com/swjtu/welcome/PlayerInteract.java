@@ -45,7 +45,7 @@ public class PlayerInteract implements Listener {
         Player player = event.getPlayer();
         // 如果为石斧头
         if (m.equals(Material.STONE_AXE)) {
-            // 拿着石斧一般就是为了连线，因此立即取消事件，也是为了避免左键点错
+            // 拿着石斧一般就是为了连线，因此立即取消事件，也是为了避免意外破坏方块
             event.setCancelled(true);
 
             // 如果设置了连线材质，则只在敲击对应材质的方块时才进行连线操作，减少误触的可能性
