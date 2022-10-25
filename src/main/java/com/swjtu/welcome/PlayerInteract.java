@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.bukkit.inventory.EquipmentSlot.OFF_HAND;
+
 public class PlayerInteract implements Listener {
 
     public String getVersion(String rawVersion) {
@@ -31,7 +33,8 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+        // 添加对副手的检测，不响应副手，避免右键交互时PlayerInteractEvent被触发两次
+        if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getHand().equals(OFF_HAND)) {
             return;
         }
         ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
@@ -39,8 +42,18 @@ public class PlayerInteract implements Listener {
         // 用户点击的坐标
         Location location = Objects.requireNonNull(event.getClickedBlock()).getLocation();
         Material m = itemStack.getType();
+        Player player = event.getPlayer();
         // 如果为石斧头
         if (m.equals(Material.STONE_AXE)) {
+            // 拿着石斧一般就是为了连线，因此立即取消事件，也是为了避免意外破坏方块
+            event.setCancelled(true);
+
+            // 如果设置了连线材质，则只在敲击对应材质的方块时才进行连线操作，减少误触的可能性
+            if (player.getMetadata("lineMaterial").size() != 0) {
+                if (!event.getClickedBlock().getType().equals(player.getMetadata("lineMaterial").get(0).value())) {
+                    return;
+                }
+            }
 
             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 if (event.getPlayer().getMetadata("firstPointOfLine").size() != 0) {
@@ -49,11 +62,9 @@ public class PlayerInteract implements Listener {
                     event.getPlayer().sendMessage("§6§l你已经设置第一个点！");
                 }
                 event.getPlayer().setMetadata("firstPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
-                event.setCancelled(true);
                 return;
             } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 event.getPlayer().setMetadata("secondPointOfLine", new FixedMetadataValue(Welcome.getProvidingPlugin(Welcome.class), location));
-                event.setCancelled(true);
                 setLine(event.getPlayer());
                 return;
             }
@@ -386,4 +397,3 @@ public class PlayerInteract implements Listener {
 
 
 }
-
