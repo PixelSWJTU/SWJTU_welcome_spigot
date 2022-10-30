@@ -44,6 +44,9 @@ commands:
   roadSwitch:
     description: "set road material"
     permission: roadSwitch.roadSwitch
+  multiLineSetter:
+    description: "multi line setter"
+    permission: multiLineSetter.multiLineSetter
 
 permissions:
   getEssentialItem.getEssentialItem:
@@ -81,4 +84,7 @@ permissions:
         default: true
     roadSwitch:
         description: "Allow the user to use the /roadSwitch command"
+        default: true
+    multiLineSetter:
+        description: "Allow the user to use the /multiLineSetter command"
         default: true

@@ -29,6 +29,7 @@ public final class Welcome extends JavaPlugin {
         Bukkit.getPluginCommand("lineMaterial").setExecutor(new LineSetter());
         Bukkit.getPluginCommand("ReloadConfig").setExecutor(new ReloadConfig());
         Bukkit.getPluginCommand("roadSwitch").setExecutor(new RoadSetter());
+        Bukkit.getPluginCommand("multiLineSetter").setExecutor(new MultiLineSetter());
         // Read config
         saveDefaultConfig();
 

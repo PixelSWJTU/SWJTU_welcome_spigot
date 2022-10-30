@@ -21,9 +21,7 @@ class GISParserTest {
         String filename = "/home/onerain233/welcome/testfile/gis.txt";
         List<List<List<Float>>> result = gisParser.parse(filename);
         for (List<List<Float>> line : result) {
-            for (List<Float> point : line) {
-                System.out.println(point.get(0) + " " + point.get(1));
-            }
+            System.out.println(line);
         }
         System.out.println(result);
 
