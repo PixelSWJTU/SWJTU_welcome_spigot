@@ -1,5 +1,7 @@
 package com.swjtu.welcome;
 
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.extension.platform.Platform;
 import com.swjtu.welcome.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,6 +34,8 @@ public final class Welcome extends JavaPlugin {
         Bukkit.getPluginCommand("multiLineSetter").setExecutor(new MultiLineSetter());
         // Read config
         saveDefaultConfig();
+
+
 
 
     }
