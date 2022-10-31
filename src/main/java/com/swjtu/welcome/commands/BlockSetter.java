@@ -17,10 +17,7 @@ import org.bukkit.command.TabCompleter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BlockSetter implements CommandExecutor, TabCompleter {
@@ -83,7 +80,7 @@ public class BlockSetter implements CommandExecutor, TabCompleter {
 
 
             } catch (FileNotFoundException e) {
-                sender.sendMessage("§6§l文件error！");
+                sender.sendMessage("§6§l文件不存在！！");
                 return false;
             }
             Material material = Material.matchMaterial(MaterialName);
@@ -111,9 +108,10 @@ public class BlockSetter implements CommandExecutor, TabCompleter {
                     sender.sendMessage("§6§l出错了请检查方块和坐标！");
                 }
             }
+
             session.commit();
             session.close();
-
+            sender.sendMessage("§6§l设置完成！");
 
         } else {
             sender.sendMessage("§6§用错了！" + args.length);
@@ -130,9 +128,20 @@ public class BlockSetter implements CommandExecutor, TabCompleter {
         int z = sender.getServer().getPlayer(sender.getName()).getLocation().getBlockZ();
         // /blocksetter <x> <y> <z> <material> <world>
         // /blocksetter SMOOTH_STONE_SLAB world /home/onerain233/mc/233.csv 65
-        if (args.length > 0) {
-            List<String> sub = Arrays.asList("/blocksetter material world_name filePath Y");
-            return sub;
+        if (args.length == 1) {
+            return Arrays.stream(Material.values()).map(Material::name).collect(Collectors.toList());
+        } else if (args.length == 2) {
+            return sender.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList());
+        } else if (args.length == 3) {
+            // list file in plugin folder
+            File file = new File("plugins/Welcome/BlockSetter");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            return Arrays.stream(Objects.requireNonNull(file.listFiles())).map(File::getName).collect(Collectors.toList());
+
+        } else if (args.length == 4) {
+            return Arrays.asList(String.valueOf(y));
         }
         return null;
     }
